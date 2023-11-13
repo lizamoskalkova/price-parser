@@ -27,7 +27,7 @@ export const App = () => {
           closeModal={() => setModalOpen(false)}
           icon={<CloseIcon />}
         >
-          {"Current BTC price  " + price + " $"}
+          {"Current price  " + price + " $"}
         </Modal>
       )}
     </div>

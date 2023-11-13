@@ -13,10 +13,9 @@
 body {
   background-image: linear-gradient(
       to bottom,
-      rgba(255, 210, 254, 0.4),
+      rgba(216, 83, 214, 0.4),
       rgba(253, 253, 253, 0.4)
-    ),
-    url("./assets/images/yosemite.jpg");
+    );
   background-size: 2000px;
   font-weight: normal;
   font-size: 16px;
