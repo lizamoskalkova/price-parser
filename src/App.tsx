@@ -1,35 +1,40 @@
 import { useEffect, useState } from "react";
-import { Button } from "./components/Button";
 import style from "./App.module.css";
-import { Modal } from "./components/Modal";
-import { useLazyGetPriceInfoQuery } from "./api/priceApi";
+import { useLazyGetPriceInfoQuery } from "./store/priceApi";
 import { CloseIcon } from "./assets/icons/CloseIcon";
+import { useDispatch } from "react-redux";
+import { setModalOpen } from "./store/modalSlice";
+import { INTERVAL } from "./utils/interval";
+import { Button } from "./components/button";
+import { Modal } from "./components/modal";
 
 export const App = () => {
-  const [modalOpen, setModalOpen] = useState(false);
   const [price, setPrice] = useState<number>();
   const [getPriceInfo] = useLazyGetPriceInfoQuery({
-    pollingInterval: 6000000,
+    pollingInterval: INTERVAL,
   });
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getPriceInfo("bitcoin")
-      .then((res) => setPrice(res.data ? res.data[0].current_price : 0))
-      .catch((err) => console.log(`api call was rejected with ${err}`));
-  }, []);
+    const fetchData = async () => {
+      try {
+        const res = await getPriceInfo("bitcoin");
+        setPrice(res.data ? res.data[0].current_price : 0);
+      } catch (err) {
+        console.log(`api call was rejected with ${err}`);
+      }
+    };
+    fetchData();
+  }, [getPriceInfo]);
+
+  const handleClick = () => {
+    dispatch(setModalOpen(true));
+  };
 
   return (
     <div className={style.container}>
-      <Button onClick={() => setModalOpen(true)}>Get Bitcoin Price</Button>
-      {modalOpen && (
-        <Modal
-          open={modalOpen}
-          closeModal={() => setModalOpen(false)}
-          icon={<CloseIcon />}
-        >
-          {"Current price  " + price + " $"}
-        </Modal>
-      )}
+      <Button onClick={handleClick}>Get Bitcoin Price</Button>
+      <Modal icon={<CloseIcon />}>{"Current price  " + price + " $"}</Modal>
     </div>
   );
 };
